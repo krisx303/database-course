@@ -8,4 +8,4 @@ Database with backend project for database course
 
 Backend: Spring Boot
 
-Database: 
+Baza danych: PostgreSQL
