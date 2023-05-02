@@ -1,7 +1,6 @@
 package com.group.travels.api.booking;
 
 import com.group.travels.api.IllegalOperationException;
-import com.group.travels.api.booking.BookingRequest.CreateBookingRequest;
 import com.group.travels.domain.booking.Booking;
 import com.group.travels.domain.booking.BookingState;
 import com.group.travels.domain.booking.BookingStorage;
