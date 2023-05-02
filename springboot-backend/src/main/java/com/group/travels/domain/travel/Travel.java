@@ -1,7 +1,11 @@
 package com.group.travels.domain.travel;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.group.travels.domain.booking.Booking;
+//import com.group.travels.domain.country.Country;
+import com.group.travels.domain.country.Country;
+import com.group.travels.domain.customer.Customer;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +40,11 @@ public class Travel {
 
     @Column(name="PRICE")
     private Integer price;
+
+    @ManyToOne
+    @JoinColumn(name = "COUNTRY")
+    @JsonBackReference
+    private Country country;
 
     @OneToMany(mappedBy = "travel")
     @JsonManagedReference
