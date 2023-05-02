@@ -32,17 +32,20 @@ public class BookingController {
     private CustomerStorage customerStorage;
 
 
+    @Operation(description = "Get all bookings from database")
     @GetMapping
     ResponseEntity<List<Booking>> getAll() {
         var bookings = bookingStorage.findAll();
         return ResponseEntity.ok(bookings);
     }
-
+    @Operation(description = "Get Booking by given ID")
     @GetMapping("/{id}")
     ResponseEntity<Booking> getByID(@PathVariable Long id) {
         Booking booking = bookingStorage.findByID(id);
         return ResponseEntity.ok(booking);
     }
+
+    @Operation(description = "Creates new Booking")
     @PostMapping
     ResponseEntity<Booking> create(@RequestBody CreateBookingRequest details) {
         Customer customer = customerStorage.findByID(details.customerID());
@@ -57,6 +60,7 @@ public class BookingController {
         }
     }
 
+    @Operation(description = "Updates state of Booking with given ID to CANCELLED")
     @PutMapping("/{id}/cancel")
     ResponseEntity<Booking> cancelBooking(@PathVariable Long id) {
         Booking booking = bookingStorage.findByID(id);
@@ -69,7 +73,7 @@ public class BookingController {
 
         return ResponseEntity.ok(updated);
     }
-
+    @Operation(description = "Updates state of Booking with given ID to PAID")
     @PutMapping("/{id}/paid")
     ResponseEntity<Booking> payBooking(@PathVariable Long id) {
         Booking booking = bookingStorage.findByID(id);
@@ -85,6 +89,7 @@ public class BookingController {
         return ResponseEntity.ok(updated);
     }
 
+    @Operation(description = "Delete Booking by ID")
     @DeleteMapping("/{id}")
     ResponseEntity<Map<String, Boolean>> delete(@PathVariable Long id) {
         travelStorage.delete(id);
@@ -94,6 +99,7 @@ public class BookingController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(description = "Get all Booking assigned to Travel with given ID")
     @GetMapping("/travel/{id}")
     ResponseEntity<List<Booking>> getAllBookingByTravelID(@PathVariable Long id){
         Travel travel = travelStorage.findByID(id);
@@ -101,6 +107,7 @@ public class BookingController {
         return ResponseEntity.ok(travel.getBookings());
     }
 
+    @Operation(description = "Get all Booking assigned to Customer with given ID")
     @GetMapping("/customer/{id}")
     ResponseEntity<List<Booking>> getAllBookingByCustomerID(@PathVariable Long id){
         Customer customer = customerStorage.findByID(id);
