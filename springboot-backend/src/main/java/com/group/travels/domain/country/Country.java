@@ -19,9 +19,9 @@ public class Country {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long country_id;
+    private long id;
 
-    @Column(name = "COUNTRY_NAME")
+    @Column(name = "COUNTRY_NAME", unique = true)
     private String countryName;
 
     @OneToMany(mappedBy = "country")

@@ -6,8 +6,6 @@ import java.util.List;
 
 public class CountryStorage {
 
-    //TODO check cases (create/update) when country with given name already exist in database
-
     private final CountryRepository countryRepository;
 
     public CountryStorage(CountryRepository countryRepository) {
@@ -39,5 +37,9 @@ public class CountryStorage {
     public void delete(Long id) {
         Country country = findByID(id);
         countryRepository.delete(country);
+    }
+
+    public List<Country> searchByName(String query) {
+        return countryRepository.findByCountryNameContainingIgnoreCase(query);
     }
 }
