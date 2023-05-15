@@ -3,6 +3,7 @@ package com.group.travels.api.country;
 import com.group.travels.domain.country.Country;
 import com.group.travels.domain.country.CountryStorage;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,14 +45,14 @@ public class CountryController {
 
     @Operation(description = "Create new country from given details")
     @PostMapping
-    ResponseEntity<CountryResponse> create(@RequestBody CountryRequest details){
+    ResponseEntity<CountryResponse> create(@RequestBody @Valid CountryRequest details){
         Country saved = countryStorage.create(details);
         return new ResponseEntity<>(new CountryResponse(saved), HttpStatus.CREATED);
     }
 
     @Operation(description = "Update country with given id")
     @PutMapping("/{id}")
-    ResponseEntity<CountryResponse> update(@PathVariable Long id, @RequestBody CountryRequest details){
+    ResponseEntity<CountryResponse> update(@PathVariable Long id, @RequestBody @Valid CountryRequest details){
         Country updated = countryStorage.update(id, details);
         return ResponseEntity.ok(new CountryResponse(updated));
     }

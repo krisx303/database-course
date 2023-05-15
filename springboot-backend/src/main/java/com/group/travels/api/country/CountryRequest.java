@@ -1,3 +1,5 @@
 package com.group.travels.api.country;
 
-public record CountryRequest(String countryName) {}
+import jakarta.validation.constraints.NotBlank;
+
+public record CountryRequest(@NotBlank String countryName) {}
