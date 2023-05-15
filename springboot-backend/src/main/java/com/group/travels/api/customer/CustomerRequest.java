@@ -1,6 +1,8 @@
 package com.group.travels.api.customer;
 
-public record CustomerRequest(String customerName,
-                              String customerEmail,
-                              String customerPhone) {
+import jakarta.validation.constraints.NotBlank;
+
+public record CustomerRequest(@NotBlank String customerName,
+                              @NotBlank String customerEmail,
+                              @NotBlank String customerPhone) {
 }
