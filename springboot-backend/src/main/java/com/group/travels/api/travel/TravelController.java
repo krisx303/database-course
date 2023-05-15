@@ -1,7 +1,11 @@
 package com.group.travels.api.travel;
 
+import com.group.travels.domain.country.Country;
+import com.group.travels.domain.country.CountryStorage;
 import com.group.travels.domain.travel.Travel;
 import com.group.travels.domain.travel.TravelStorage;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,31 +22,42 @@ public class TravelController {
     @Autowired
     private TravelStorage travelStorage;
 
+    @Autowired
+    private CountryStorage countryStorage;
 
+
+    @Operation(description = "Get all travels from database")
     @GetMapping
-    ResponseEntity<List<Travel>> getAll() {
-        var travels = travelStorage.findAll();
+    ResponseEntity<List<TravelResponse>> getAll() {
+        var travels = travelStorage.findAll()
+                .stream().map(TravelResponse::new).toList();
         return ResponseEntity.ok(travels);
     }
 
+    @Operation(description = "Get travel details by given ID")
     @GetMapping("/{id}")
-    ResponseEntity<Travel> getByID(@PathVariable Long id){
+    ResponseEntity<TravelResponse> getByID(@PathVariable Long id){
         Travel travel = travelStorage.findByID(id);
-        return ResponseEntity.ok(travel);
+        return ResponseEntity.ok(new TravelResponse(travel));
     }
 
+    @Operation(description = "Create new travel with given details")
     @PostMapping
-    ResponseEntity<Travel> create(@RequestBody TravelRequest details){
-        Travel saved = travelStorage.create(details);
-        return new ResponseEntity<>(saved, HttpStatus.CREATED);
+    ResponseEntity<TravelResponse> create(@RequestBody @Valid TravelRequest details) {
+        Country country = countryStorage.findByID(details.countryID());
+        Travel saved = travelStorage.create(details, country);
+        return new ResponseEntity<>(new TravelResponse(saved), HttpStatus.CREATED);
     }
 
+    @Operation(description = "Update travel details with given id")
     @PutMapping("/{id}")
-    ResponseEntity<Travel> update(@PathVariable Long id, @RequestBody TravelRequest details) {
-        Travel updated = travelStorage.update(id, details);
-        return ResponseEntity.ok(updated);
+    ResponseEntity<TravelResponse> update(@PathVariable Long id, @RequestBody @Valid TravelRequest details) {
+        Country country = countryStorage.findByID(details.countryID());
+        Travel updated = travelStorage.update(id, details, country);
+        return ResponseEntity.ok(new TravelResponse(updated));
     }
 
+    @Operation(description = "Delete travel with given id")
     @DeleteMapping("/{id}")
     ResponseEntity<Map<String, Boolean>> delete(@PathVariable Long id){
         travelStorage.delete(id);

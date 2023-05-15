@@ -92,7 +92,7 @@ public class BookingController {
     @Operation(description = "Delete Booking by ID")
     @DeleteMapping("/{id}")
     ResponseEntity<Map<String, Boolean>> delete(@PathVariable Long id) {
-        travelStorage.delete(id);
+        bookingStorage.delete(id);
 
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);

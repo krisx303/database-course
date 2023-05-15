@@ -1,6 +1,8 @@
 package com.group.travels.domain.travel;
 
+import com.group.travels.api.IllegalOperationException;
 import com.group.travels.api.travel.TravelRequest;
+import com.group.travels.domain.country.Country;
 
 import java.util.List;
 
@@ -12,32 +14,51 @@ public class TravelStorage {
         this.travelRepository = travelRepository;
     }
 
-    public List<Travel> findAll(){
+    public List<Travel> findAll() {
         return travelRepository.findAll();
     }
 
-    public Travel findByID(Long id){
+    public Travel findByID(Long id) {
         return travelRepository.findById(id)
                 .orElseThrow(() -> new TravelNotFoundException(id));
     }
 
-    public Travel create(TravelRequest details) {
+    public Travel create(TravelRequest details, Country country) {
+        if(details.hasInvalidDates())
+            throw new IllegalOperationException("Travel end date is before start date!!");
+
         Travel toSave = Travel.builder()
                 .travelName(details.travelName())
-                .travelDate(details.travelDate())
+                .travelStartDate(details.travelStartDate())
+                .travelEndDate(details.travelEndDate())
                 .price(details.price())
+                .country(country)
                 .maxNumberOfPlaces(details.maxNumberOfPlaces())
                 .numberOfFreePlaces(details.maxNumberOfPlaces()).build();
+
         return travelRepository.save(toSave);
     }
 
-    public Travel update(Long id, TravelRequest details) {
+    public Travel update(Long id, TravelRequest details, Country country) {
         Travel toUpdate = findByID(id);
+
+        if(!toUpdate.canUpdateNumberOfMaxPlaces(details.maxNumberOfPlaces()))
+            throw new IllegalOperationException("Cannot set number of max places to given value because of not enough free places");
+
+        if(details.hasInvalidDates())
+            throw new IllegalOperationException("Travel end date is before start date!!");
+
         toUpdate.setTravelName(details.travelName());
-        toUpdate.setTravelDate(details.travelDate());
+        toUpdate.setTravelStartDate(details.travelStartDate());
+        toUpdate.setTravelEndDate(details.travelEndDate());
+        toUpdate.setCountry(country);
         toUpdate.setPrice(details.price());
-        //TODO handle case when nubmer of max places will be negative
         toUpdate.setMaxNumberOfPlaces(details.maxNumberOfPlaces());
+
+        int newNumberOfFreePlaces = details.maxNumberOfPlaces() - toUpdate.getMaxNumberOfPlaces() + toUpdate.getNumberOfFreePlaces();
+
+        toUpdate.setNumberOfFreePlaces(newNumberOfFreePlaces);
+
         return travelRepository.save(toUpdate);
     }
 
@@ -51,7 +72,7 @@ public class TravelStorage {
         travelRepository.save(travel);
     }
 
-    public void undoReservationOnTrip(Travel travel){
+    public void undoReservationOnTrip(Travel travel) {
         travel.setNumberOfFreePlaces(travel.getNumberOfFreePlaces() + 1);
         travelRepository.save(travel);
     }

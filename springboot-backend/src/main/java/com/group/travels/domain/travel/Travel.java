@@ -3,9 +3,7 @@ package com.group.travels.domain.travel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.group.travels.domain.booking.Booking;
-//import com.group.travels.domain.country.Country;
 import com.group.travels.domain.country.Country;
-import com.group.travels.domain.customer.Customer;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,8 +27,11 @@ public class Travel {
     @Column(name = "TRAVEL_NAME")
     private String travelName;
 
-    @Column(name = "TRAVEL_DATE")
-    private LocalDateTime travelDate;
+    @Column(name = "TRAVEL_START_DATE")
+    private LocalDateTime travelStartDate;
+
+    @Column(name = "TRAVEL_END_DATE")
+    private LocalDateTime travelEndDate;
 
     @Column(name = "MAX_NUMBER_OF_PLACES")
     private Integer maxNumberOfPlaces;
@@ -50,4 +51,12 @@ public class Travel {
     @JsonManagedReference
     @Builder.Default
     private List<Booking> bookings = new ArrayList<>();
+
+    public boolean hasAnyFreePlaces() {
+        return numberOfFreePlaces > 0;
+    }
+
+    public boolean canUpdateNumberOfMaxPlaces(int newMaxPlaces) {
+        return newMaxPlaces - maxNumberOfPlaces + numberOfFreePlaces >= 0;
+    }
 }
