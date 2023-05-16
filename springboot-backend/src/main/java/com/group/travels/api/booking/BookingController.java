@@ -6,6 +6,7 @@ import com.group.travels.domain.booking.BookingState;
 import com.group.travels.domain.booking.BookingStorage;
 import com.group.travels.domain.customer.Customer;
 import com.group.travels.domain.customer.CustomerStorage;
+import com.group.travels.domain.log.LogStorage;
 import com.group.travels.domain.travel.Travel;
 import com.group.travels.domain.travel.TravelStorage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,9 @@ public class BookingController {
     @Autowired
     private CustomerStorage customerStorage;
 
+    @Autowired
+    private LogStorage logStorage;
+
 
     @Operation(description = "Get all bookings from database")
     @GetMapping
@@ -54,6 +58,7 @@ public class BookingController {
         if (travel.getNumberOfFreePlaces() > 0) {
             travelStorage.reservePlaceOnTrip(travel);
             Booking saved = bookingStorage.create(customer, travel);
+            logStorage.logCreate(saved);
             return new ResponseEntity<>(saved, HttpStatus.CREATED);
         } else {
             throw new IllegalOperationException("There is no free places on this trip!");
@@ -71,6 +76,8 @@ public class BookingController {
         travelStorage.undoReservationOnTrip(booking.getTravel());
         Booking updated = bookingStorage.changeBookingState(booking, BookingState.CANCELLED);
 
+        logStorage.logChange(updated);
+
         return ResponseEntity.ok(updated);
     }
     @Operation(description = "Updates state of Booking with given ID to PAID")
@@ -85,6 +92,8 @@ public class BookingController {
             throw new IllegalOperationException("Cannot make a payment, booking is cancelled!");
 
         Booking updated = bookingStorage.changeBookingState(booking, BookingState.PAID);
+
+        logStorage.logChange(updated);
 
         return ResponseEntity.ok(updated);
     }
