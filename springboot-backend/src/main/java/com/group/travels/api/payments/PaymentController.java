@@ -6,6 +6,7 @@ import com.group.travels.domain.booking.Booking;
 import com.group.travels.domain.booking.BookingState;
 import com.group.travels.domain.booking.BookingStorage;
 import com.group.travels.domain.customer.CustomerStorage;
+import com.group.travels.domain.discount.DiscountStorage;
 import com.group.travels.domain.log.LogStorage;
 import com.group.travels.domain.payments.Payment;
 import com.group.travels.domain.payments.PaymentStorage;
@@ -39,6 +40,9 @@ public class PaymentController {
     @Autowired
     private PaymentStorage paymentStorage;
 
+    @Autowired
+    private DiscountStorage discountStorage;
+
     @Operation(description = "Get customer payments by customer id")
     @GetMapping("/customer/{id}")
     ResponseEntity<List<PaymentResponse>> getAllByCustomerID(Long id) {
@@ -49,6 +53,16 @@ public class PaymentController {
     @Operation(description = "Pay for bookings by customer id")
     @PutMapping("/customer/{id}/pay")
     ResponseEntity<List<Booking>> payForBookings(Long id, PaymentRequest paymentRequest) {
+        if(paymentRequest.discountCode()!=null){
+            if(discountStorage.findByCode(paymentRequest.discountCode())==null){
+                throw new IllegalOperationException("Discount code is not valid");
+            }
+            if(discountStorage.findByCode(paymentRequest.discountCode()).getUsed()){
+                throw new IllegalOperationException("Discount code is already used");
+            }
+        }
+
+
         List<Booking> bookings= new ArrayList<>();
         for (Long bookingID: paymentRequest.bookingIDs()) {
             Booking booking = bookingStorage.findByID(bookingID);
@@ -63,11 +77,14 @@ public class PaymentController {
             }
             Booking updated=bookingStorage.changeBookingState(booking, BookingState.PAID);
             bookings.add(updated);
-            paymentStorage.create(booking.getCustomer(), booking.getTravel());
+            paymentStorage.create(booking.getCustomer(), booking.getTravel(),
+                    paymentRequest.discountCode()==null?-1:discountStorage.findByCode(paymentRequest.discountCode()).calculateDiscount(booking.getTravel().getPrice()));
             logStorage.logChange(updated);
         }
 
-
+        if (paymentRequest.discountCode()!=null){
+            discountStorage.useDiscount(discountStorage.findByCode(paymentRequest.discountCode()).getId());
+        }
         return ResponseEntity.ok(bookings);
     }
 }

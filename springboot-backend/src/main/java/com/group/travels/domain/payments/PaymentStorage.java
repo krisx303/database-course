@@ -13,6 +13,7 @@ public class PaymentStorage {
 
     private final PaymentRepository PaymentRepository;
 
+
     public PaymentStorage(PaymentRepository PaymentRepository) {
         this.PaymentRepository = PaymentRepository;
     }
@@ -26,13 +27,24 @@ public class PaymentStorage {
                 .orElseThrow(() -> new PaymentNotFoundException(id));
     }
 
-    public Payment create(Customer customer, Travel travel){
-        Payment toSave = Payment.builder()
-                .customer(customer)
-                .travel(travel)
-                .paymentDate(LocalDateTime.now())
-                .price(travel.getPrice())
-                .build();
+    public Payment create(Customer customer, Travel travel,double price_discounted) {
+        Payment toSave;
+        if(price_discounted==-1){
+             toSave = Payment.builder()
+                    .customer(customer)
+                    .travel(travel)
+                    .paymentDate(LocalDateTime.now())
+                    .price(travel.getPrice())
+                    .build();
+        }else{
+             toSave = Payment.builder()
+                    .customer(customer)
+                    .travel(travel)
+                    .paymentDate(LocalDateTime.now())
+                    .price((int) price_discounted)
+                    .build();
+        }
+
 
         return PaymentRepository.save(toSave);
     }
