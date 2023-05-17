@@ -2,6 +2,7 @@ package com.group.travels.domain.customer;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.group.travels.domain.booking.Booking;
+import com.group.travels.domain.payments.Payment;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,4 +34,7 @@ public class Customer {
     @JsonManagedReference
     private List<Booking> bookings;
 
+    @OneToMany(mappedBy = "customer")
+    @JsonManagedReference
+    private List<Payment> payments;
 }

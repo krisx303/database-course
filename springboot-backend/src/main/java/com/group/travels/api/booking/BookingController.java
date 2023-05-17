@@ -7,6 +7,8 @@ import com.group.travels.domain.booking.BookingStorage;
 import com.group.travels.domain.customer.Customer;
 import com.group.travels.domain.customer.CustomerStorage;
 import com.group.travels.domain.log.LogStorage;
+import com.group.travels.domain.payments.Payment;
+import com.group.travels.domain.payments.PaymentStorage;
 import com.group.travels.domain.travel.Travel;
 import com.group.travels.domain.travel.TravelStorage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +36,9 @@ public class BookingController {
 
     @Autowired
     private LogStorage logStorage;
+
+    @Autowired
+    private PaymentStorage paymentStorage;
 
 
     @Operation(description = "Get all bookings from database")
@@ -80,7 +85,7 @@ public class BookingController {
 
         return ResponseEntity.ok(updated);
     }
-    @Operation(description = "Updates state of Booking with given ID to PAID")
+    @Operation(description = "Updates state of Booking with given ID to PAID, and add payment to history")
     @PutMapping("/{id}/paid")
     ResponseEntity<Booking> payBooking(@PathVariable Long id) {
         Booking booking = bookingStorage.findByID(id);
@@ -92,6 +97,8 @@ public class BookingController {
             throw new IllegalOperationException("Cannot make a payment, booking is cancelled!");
 
         Booking updated = bookingStorage.changeBookingState(booking, BookingState.PAID);
+
+        paymentStorage.create(booking.getCustomer(), booking.getTravel());
 
         logStorage.logChange(updated);
 
