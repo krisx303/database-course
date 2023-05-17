@@ -85,6 +85,7 @@ public class BookingController {
 
         return ResponseEntity.ok(updated);
     }
+    /*
     @Operation(description = "Updates state of Booking with given ID to PAID, and add payment to history")
     @PutMapping("/{id}/paid")
     ResponseEntity<Booking> payBooking(@PathVariable Long id) {
@@ -104,6 +105,8 @@ public class BookingController {
 
         return ResponseEntity.ok(updated);
     }
+    */
+
 
     @Operation(description = "Delete Booking by ID")
     @DeleteMapping("/{id}")
