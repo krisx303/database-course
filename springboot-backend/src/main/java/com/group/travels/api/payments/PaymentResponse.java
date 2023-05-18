@@ -12,6 +12,6 @@ public record PaymentResponse(Long id,
         this(payment.getId(),
                 payment.getPaymentDate(),
                 payment.getPrice(),
-                payment.getTravel().getTravelName());
+                payment.getBooking().getTravel().getTravelName());
     }
 }

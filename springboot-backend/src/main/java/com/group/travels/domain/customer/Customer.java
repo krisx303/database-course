@@ -34,7 +34,5 @@ public class Customer {
     @JsonManagedReference
     private List<Booking> bookings;
 
-    @OneToMany(mappedBy = "customer")
-    @JsonManagedReference
-    private List<Payment> payments;
+
 }

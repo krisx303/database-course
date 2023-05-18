@@ -53,10 +53,13 @@ public class Travel {
     @Builder.Default
     private List<Booking> bookings = new ArrayList<>();
 
+    /*
     @OneToMany(mappedBy = "travel")
     @JsonManagedReference
     @Builder.Default
     private List<Payment> payments = new ArrayList<>();
+
+     */
 
     public boolean hasAnyFreePlaces() {
         return numberOfFreePlaces > 0;

@@ -1,12 +1,16 @@
 package com.group.travels.domain.booking;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.group.travels.domain.customer.Customer;
+import com.group.travels.domain.payments.Payment;
 import com.group.travels.domain.travel.Travel;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,6 +37,11 @@ public class Booking {
 
     @Column(name = "BOOKING_DATE")
     private LocalDateTime bookingDate;
+
+    //bookings
+    @OneToMany(mappedBy = "booking")
+    @JsonManagedReference
+    private List<Payment> payments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "BOOKING_STATE")

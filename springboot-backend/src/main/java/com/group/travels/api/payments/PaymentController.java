@@ -62,22 +62,25 @@ public class PaymentController {
             }
         }
 
+        for (Long bookingID: paymentRequest.bookingIDs()) {
+            Booking booking = bookingStorage.findByID(bookingID);
+            if (booking.getBookingState() == BookingState.PAID)
+                throw new IllegalOperationException("Booking is already paid");
+
+            if (booking.getBookingState() == BookingState.CANCELLED)
+                throw new IllegalOperationException("Cannot make a payment, booking is cancelled!");
+
+            if (booking.getCustomer().getCustomer_id() != id) {
+                throw new IllegalOperationException("Cannot make a payment, booking is not yours!");
+            }
+        }
 
         List<Booking> bookings= new ArrayList<>();
         for (Long bookingID: paymentRequest.bookingIDs()) {
             Booking booking = bookingStorage.findByID(bookingID);
-            if(booking.getBookingState() == BookingState.PAID)
-                throw new IllegalOperationException("Booking is already paid");
-
-            if(booking.getBookingState() == BookingState.CANCELLED)
-                throw new IllegalOperationException("Cannot make a payment, booking is cancelled!");
-
-            if(booking.getCustomer().getCustomer_id()!=id){
-                throw new IllegalOperationException("Cannot make a payment, booking is not yours!");
-            }
             Booking updated=bookingStorage.changeBookingState(booking, BookingState.PAID);
             bookings.add(updated);
-            paymentStorage.create(booking.getCustomer(), booking.getTravel(),
+            paymentStorage.create(booking,
                     paymentRequest.discountCode()==null?-1:discountStorage.findByCode(paymentRequest.discountCode()).calculateDiscount(booking.getTravel().getPrice()));
             logStorage.logChange(updated);
         }

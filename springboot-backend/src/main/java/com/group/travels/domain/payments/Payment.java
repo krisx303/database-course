@@ -1,6 +1,7 @@
 package com.group.travels.domain.payments;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.group.travels.domain.booking.Booking;
 import com.group.travels.domain.customer.Customer;
 import com.group.travels.domain.travel.Travel;
 import jakarta.persistence.*;
@@ -22,17 +23,12 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    //customers
+    //booking
     @ManyToOne
-    @JoinColumn(name = "CUSTOMER_ID")
+    @JoinColumn(name = "BOOKING_ID")
     @JsonBackReference
-    private Customer customer;
+    private Booking booking;
 
-    //travel
-    @ManyToOne
-    @JoinColumn(name = "TRAVEL_ID")
-    @JsonBackReference
-    private Travel travel;
 
     //date
     @Column(name = "PAYMENT_DATE")

@@ -2,6 +2,7 @@ package com.group.travels.domain.payments;
 
 import com.group.travels.api.IllegalOperationException;
 import com.group.travels.api.travel.TravelRequest;
+import com.group.travels.domain.booking.Booking;
 import com.group.travels.domain.country.Country;
 import com.group.travels.domain.customer.Customer;
 import com.group.travels.domain.travel.Travel;
@@ -27,19 +28,17 @@ public class PaymentStorage {
                 .orElseThrow(() -> new PaymentNotFoundException(id));
     }
 
-    public Payment create(Customer customer, Travel travel,double price_discounted) {
+    public Payment create(Booking booking, double price_discounted) {
         Payment toSave;
         if(price_discounted==-1){
              toSave = Payment.builder()
-                    .customer(customer)
-                    .travel(travel)
+                    .booking(booking)
                     .paymentDate(LocalDateTime.now())
-                    .price(travel.getPrice())
+                    .price(booking.getTravel().getPrice())
                     .build();
         }else{
              toSave = Payment.builder()
-                    .customer(customer)
-                    .travel(travel)
+                    .booking(booking)
                     .paymentDate(LocalDateTime.now())
                     .price((int) price_discounted)
                     .build();
@@ -50,6 +49,6 @@ public class PaymentStorage {
     }
 
     public List<Payment> getPaymentsByCusomerId(Long id){
-        return PaymentRepository.findAll().stream().filter(payment -> payment.getCustomer().getCustomer_id() == id).toList();
+        return PaymentRepository.findAll().stream().filter(payment -> payment.getBooking().getCustomer().getCustomer_id() == id).toList();
     }
 }
