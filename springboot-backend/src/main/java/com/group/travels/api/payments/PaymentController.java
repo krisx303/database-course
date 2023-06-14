@@ -84,6 +84,7 @@ public class PaymentController {
                 price = discount.calculateDiscount(booking.getTravel().getPrice());
             else
                 price = booking.getTravel().getPrice();
+            price = Math.round(price * 100.0)/100.0;
             Payment payment = paymentStorage.create(booking, price, discount);
             Booking updated = bookingStorage.pay(booking, payment);
             response.add(updated);

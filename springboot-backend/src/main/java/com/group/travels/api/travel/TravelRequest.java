@@ -10,7 +10,7 @@ public record TravelRequest(@NotBlank String travelName,
                             LocalDateTime travelStartDate,
                             LocalDateTime travelEndDate,
                             @Positive Integer maxNumberOfPlaces,
-                            @PositiveOrZero Integer price,
+                            @PositiveOrZero Double price,
                             @Positive Long countryID) {
 
     public boolean hasInvalidDates() {

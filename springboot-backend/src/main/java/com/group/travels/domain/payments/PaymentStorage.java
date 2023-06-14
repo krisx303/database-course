@@ -33,7 +33,7 @@ public class PaymentStorage {
         Payment toSave = Payment.builder()
                 .booking(booking)
                 .paymentDate(LocalDateTime.now())
-                .price((int) priceDiscounted)
+                .price(priceDiscounted)
                 .discount(discount)
                 .build();
 

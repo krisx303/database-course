@@ -40,7 +40,7 @@ public class Travel {
     private Integer numberOfFreePlaces;
 
     @Column(name="PRICE")
-    private Integer price;
+    private Double price;
 
     @ManyToOne
     @JoinColumn(name = "COUNTRY")

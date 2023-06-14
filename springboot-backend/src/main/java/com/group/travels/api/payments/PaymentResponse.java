@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public record PaymentResponse(Long id,
                                LocalDateTime paymentDate,
-                               Integer price,
+                               Double price,
                                String travelName) {
     public PaymentResponse(Payment payment){
         this(payment.getId(),

@@ -28,14 +28,13 @@ public class Payment {
     @JsonBackReference
     private Booking booking;
 
-
     //date
     @Column(name = "PAYMENT_DATE")
     private LocalDateTime paymentDate;
 
     //price
     @Column(name = "PRICE")
-    private Integer price;
+    private Double price;
 
     @OneToOne
     @JoinColumn(name = "DISCOUNT_ID")

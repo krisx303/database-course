@@ -10,7 +10,7 @@ public record TravelResponse(Long id,
                              LocalDateTime travelEndDate,
                              Integer maxNumberOfPlaces,
                              Integer numberOfFreePlaces,
-                             Integer price,
+                             Double price,
                              Long countryID) {
 
     public TravelResponse(Travel travel){
