@@ -15,4 +15,8 @@ public class DiscountNotFoundException extends RuntimeException {
     public DiscountNotFoundException(Long id) {
         super("Discount with id '%d' not found".formatted(id));
     }
+
+    public DiscountNotFoundException(String code){
+        super("Discount with code '%s' not found!".formatted(code));
+    }
 }

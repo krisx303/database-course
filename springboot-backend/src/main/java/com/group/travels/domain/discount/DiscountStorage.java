@@ -36,7 +36,9 @@ public class DiscountStorage {
 
     //get discount by code
     public Discount findByCode(String discountCode) {
-        return discountRepository.findAll().stream().findFirst().filter(discount -> discount.getDiscountCode().equals(discountCode))
-                .orElseThrow(() -> new DiscountNotFoundException(0L));
+        Discount byDiscountCode = discountRepository.findByDiscountCode(discountCode);
+        if(byDiscountCode == null)
+            throw new DiscountNotFoundException(discountCode);
+        return byDiscountCode;
     }
 }
