@@ -6,6 +6,7 @@ import com.group.travels.domain.booking.Booking;
 import com.group.travels.domain.booking.BookingState;
 import com.group.travels.domain.booking.BookingStorage;
 import com.group.travels.domain.customer.CustomerStorage;
+import com.group.travels.domain.discount.Discount;
 import com.group.travels.domain.discount.DiscountStorage;
 import com.group.travels.domain.log.LogStorage;
 import com.group.travels.domain.payments.Payment;
@@ -53,17 +54,16 @@ public class PaymentController {
     @Operation(description = "Pay for bookings by customer id")
     @PutMapping("/customer/{id}/pay")
     ResponseEntity<List<Booking>> payForBookings(Long id, PaymentRequest paymentRequest) {
-        if(paymentRequest.discountCode()!=null){
-            if(discountStorage.findByCode(paymentRequest.discountCode())==null){
-                throw new IllegalOperationException("Discount code is not valid");
-            }
-            if(discountStorage.findByCode(paymentRequest.discountCode()).getUsed()){
+        Discount discount = null;
+        if(paymentRequest.discountCode() != null) {
+            discount = discountStorage.findByCode(paymentRequest.discountCode());
+            if(discount.getUsed()){
                 throw new IllegalOperationException("Discount code is already used");
             }
         }
 
-        for (Long bookingID: paymentRequest.bookingIDs()) {
-            Booking booking = bookingStorage.findByID(bookingID);
+        List<Booking> bookings = paymentRequest.bookingIDs().stream().map(bookingStorage::findByID).toList();
+        for (Booking booking : bookings) {
             if (booking.getBookingState() == BookingState.PAID)
                 throw new IllegalOperationException("Booking is already paid");
 
@@ -75,19 +75,24 @@ public class PaymentController {
             }
         }
 
-        List<Booking> bookings= new ArrayList<>();
-        for (Long bookingID: paymentRequest.bookingIDs()) {
-            Booking booking = bookingStorage.findByID(bookingID);
-            Booking updated=bookingStorage.changeBookingState(booking, BookingState.PAID);
-            bookings.add(updated);
-            paymentStorage.create(booking,
-                    paymentRequest.discountCode()==null?-1:discountStorage.findByCode(paymentRequest.discountCode()).calculateDiscount(booking.getTravel().getPrice()),discountStorage.findByCode(paymentRequest.discountCode()));
+        List<Booking> response = new ArrayList<>();
+
+        double price;
+
+        for (Booking booking : bookings) {
+            Booking updated = bookingStorage.changeBookingState(booking, BookingState.PAID);
+            response.add(updated);
+            if(discount != null)
+                price = discount.calculateDiscount(booking.getTravel().getPrice());
+            else
+                price = booking.getTravel().getPrice();
+            paymentStorage.create(booking, price, discount);
             logStorage.logChange(updated);
         }
 
-        if (paymentRequest.discountCode()!=null){
-            discountStorage.useDiscount(discountStorage.findByCode(paymentRequest.discountCode()).getId());
-        }
-        return ResponseEntity.ok(bookings);
+        if(discount != null)
+            discountStorage.useDiscount(discount);
+
+        return ResponseEntity.ok(response);
     }
 }

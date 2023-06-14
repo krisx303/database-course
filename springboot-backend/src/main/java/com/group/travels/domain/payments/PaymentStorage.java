@@ -29,24 +29,13 @@ public class PaymentStorage {
                 .orElseThrow(() -> new PaymentNotFoundException(id));
     }
 
-    public Payment create(Booking booking, double price_discounted, Discount discount){
-        Payment toSave;
-        if(price_discounted==-1){
-             toSave = Payment.builder()
-                    .booking(booking)
-                    .paymentDate(LocalDateTime.now())
-                    .price(booking.getTravel().getPrice())
-                     .discount(discount)
-                    .build();
-        }else{
-             toSave = Payment.builder()
-                    .booking(booking)
-                    .paymentDate(LocalDateTime.now())
-                    .price((int) price_discounted)
-                     .discount(discount)
-                    .build();
-        }
-
+    public Payment create(Booking booking, double priceDiscounted, Discount discount){
+        Payment toSave = Payment.builder()
+                .booking(booking)
+                .paymentDate(LocalDateTime.now())
+                .price((int) priceDiscounted)
+                .discount(discount)
+                .build();
 
         return PaymentRepository.save(toSave);
     }

@@ -28,8 +28,7 @@ public class DiscountStorage {
         return discountRepository.save(toSave);
     }
 
-    public Discount useDiscount(Long id) {
-        Discount discount = findByID(id);
+    public Discount useDiscount(Discount discount) {
         discount.setUsed(true);
         return discountRepository.save(discount);
     }
