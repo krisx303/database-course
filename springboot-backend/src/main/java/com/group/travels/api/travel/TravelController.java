@@ -49,6 +49,14 @@ public class TravelController {
         return new ResponseEntity<>(new TravelResponse(saved), HttpStatus.CREATED);
     }
 
+    @Operation(description = "Get all travels which contains query string in name")
+    @GetMapping("/search")
+    ResponseEntity<List<TravelResponse>> searchByName(@RequestParam("query") String query) {
+        var filtered = travelStorage.searchByName(query)
+                .stream().map(TravelResponse::new).toList();
+        return ResponseEntity.ok(filtered);
+    }
+
     @Operation(description = "Update travel details with given id")
     @PutMapping("/{id}")
     ResponseEntity<TravelResponse> update(@PathVariable Long id, @RequestBody @Valid TravelRequest details) {

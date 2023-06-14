@@ -4,6 +4,7 @@ import com.group.travels.api.IllegalOperationException;
 import com.group.travels.api.travel.TravelRequest;
 import com.group.travels.domain.country.Country;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TravelStorage {
@@ -75,5 +76,9 @@ public class TravelStorage {
     public void undoReservationOnTrip(Travel travel) {
         travel.setNumberOfFreePlaces(travel.getNumberOfFreePlaces() + 1);
         travelRepository.save(travel);
+    }
+
+    public List<Travel> searchByName(String query) {
+        return travelRepository.findByTravelNameContainingIgnoreCase(query);
     }
 }
