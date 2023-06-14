@@ -12,10 +12,10 @@ public interface TravelRepository extends JpaRepository<Travel,Long> {
 
     List<Travel> findByTravelNameContainingIgnoreCase(String query);
 
-    @Query(value = "SELECT t.* FROM travel t " +
-            "JOIN country c ON t.country_id = c.id " +
+    @Query(value = "SELECT t.* FROM travels t " +
+            "JOIN countries c ON t.country = c.id " +
             "WHERE c.id IN :countryNames " +
-            "AND t.name LIKE %:travelName% " +
+            "AND t.travel_name LIKE %:travelName% " +
             "AND t.number_of_free_places >= :minFreePlaces",
             nativeQuery = true)
     List<Travel> filterTravels(
