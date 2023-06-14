@@ -41,6 +41,7 @@ public class Booking {
     //bookings
     @OneToMany(mappedBy = "booking")
     @JsonManagedReference
+    @Builder.Default
     private List<Payment> payments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

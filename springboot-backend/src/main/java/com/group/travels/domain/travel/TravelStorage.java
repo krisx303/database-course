@@ -3,8 +3,8 @@ package com.group.travels.domain.travel;
 import com.group.travels.api.IllegalOperationException;
 import com.group.travels.api.travel.TravelRequest;
 import com.group.travels.domain.country.Country;
+import org.hibernate.query.Query;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class TravelStorage {
@@ -80,5 +80,9 @@ public class TravelStorage {
 
     public List<Travel> searchByName(String query) {
         return travelRepository.findByTravelNameContainingIgnoreCase(query);
+    }
+
+    public List<Travel> filterTravels(List<Long> countries, String travelName, int minFreePlaces) {
+        return travelRepository.filterTravels(countries, travelName, minFreePlaces);
     }
 }

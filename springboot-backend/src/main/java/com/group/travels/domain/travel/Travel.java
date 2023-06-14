@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.group.travels.domain.booking.Booking;
 import com.group.travels.domain.country.Country;
-import com.group.travels.domain.payments.Payment;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -52,14 +51,6 @@ public class Travel {
     @JsonManagedReference
     @Builder.Default
     private List<Booking> bookings = new ArrayList<>();
-
-    /*
-    @OneToMany(mappedBy = "travel")
-    @JsonManagedReference
-    @Builder.Default
-    private List<Payment> payments = new ArrayList<>();
-
-     */
 
     public boolean hasAnyFreePlaces() {
         return numberOfFreePlaces > 0;

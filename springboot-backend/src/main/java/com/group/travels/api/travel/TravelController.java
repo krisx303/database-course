@@ -57,6 +57,14 @@ public class TravelController {
         return ResponseEntity.ok(filtered);
     }
 
+    @Operation(description = "Filter travels by provided object TravelSearchRequest")
+    @PostMapping("/filter")
+    ResponseEntity<List<TravelResponse>> filterTravels(@RequestBody TravelSearchRequest details){
+        var filtered = travelStorage.filterTravels(details.countryIDs(), details.travelName(), details.minFreePlaces());
+        var formatted = filtered.stream().map(TravelResponse::new).toList();
+        return ResponseEntity.ok(formatted);
+    }
+
     @Operation(description = "Update travel details with given id")
     @PutMapping("/{id}")
     ResponseEntity<TravelResponse> update(@PathVariable Long id, @RequestBody @Valid TravelRequest details) {
