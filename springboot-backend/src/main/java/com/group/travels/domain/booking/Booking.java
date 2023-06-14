@@ -44,7 +44,7 @@ public class Booking {
     @Column(name = "BOOKING_STATE")
     private BookingState bookingState;
 
-    double getSavingsValue() {
+    public double getSavingsValue() {
         if(payment == null) return 0;
         if(payment.getDiscount() == null) return 0;
         return payment.getDiscount().calculateSavings(travel.getPrice());
