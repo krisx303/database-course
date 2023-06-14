@@ -85,28 +85,6 @@ public class BookingController {
 
         return ResponseEntity.ok(updated);
     }
-    /*
-    @Operation(description = "Updates state of Booking with given ID to PAID, and add payment to history")
-    @PutMapping("/{id}/paid")
-    ResponseEntity<Booking> payBooking(@PathVariable Long id) {
-        Booking booking = bookingStorage.findByID(id);
-
-        if(booking.getBookingState() == BookingState.PAID)
-            throw new IllegalOperationException("Booking is already paid");
-
-        if(booking.getBookingState() == BookingState.CANCELLED)
-            throw new IllegalOperationException("Cannot make a payment, booking is cancelled!");
-
-        Booking updated = bookingStorage.changeBookingState(booking, BookingState.PAID);
-
-        paymentStorage.create(booking.getCustomer(), booking.getTravel());
-
-        logStorage.logChange(updated);
-
-        return ResponseEntity.ok(updated);
-    }
-    */
-
 
     @Operation(description = "Delete Booking by ID")
     @DeleteMapping("/{id}")

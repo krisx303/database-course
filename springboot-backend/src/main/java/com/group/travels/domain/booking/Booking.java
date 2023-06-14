@@ -9,8 +9,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -38,11 +36,9 @@ public class Booking {
     @Column(name = "BOOKING_DATE")
     private LocalDateTime bookingDate;
 
-    //bookings
-    @OneToMany(mappedBy = "booking")
-    @JsonManagedReference
-    @Builder.Default
-    private List<Payment> payments = new ArrayList<>();
+    @OneToOne
+    @JsonBackReference
+    private Payment payment;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "BOOKING_STATE")

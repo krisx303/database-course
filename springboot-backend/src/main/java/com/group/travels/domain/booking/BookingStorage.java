@@ -1,6 +1,7 @@
 package com.group.travels.domain.booking;
 
 import com.group.travels.domain.customer.Customer;
+import com.group.travels.domain.payments.Payment;
 import com.group.travels.domain.travel.Travel;
 
 import java.time.LocalDateTime;
@@ -39,6 +40,12 @@ public class BookingStorage {
 
     public Booking changeBookingState(Booking booking, BookingState state) {
         booking.setBookingState(state);
+        return bookingRepository.save(booking);
+    }
+
+    public Booking pay(Booking booking, Payment payment) {
+        booking.setBookingState(BookingState.PAID);
+        booking.setPayment(payment);
         return bookingRepository.save(booking);
     }
 }

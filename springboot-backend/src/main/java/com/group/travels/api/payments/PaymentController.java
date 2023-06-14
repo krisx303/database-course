@@ -80,13 +80,13 @@ public class PaymentController {
         double price;
 
         for (Booking booking : bookings) {
-            Booking updated = bookingStorage.changeBookingState(booking, BookingState.PAID);
-            response.add(updated);
             if(discount != null)
                 price = discount.calculateDiscount(booking.getTravel().getPrice());
             else
                 price = booking.getTravel().getPrice();
-            paymentStorage.create(booking, price, discount);
+            Payment payment = paymentStorage.create(booking, price, discount);
+            Booking updated = bookingStorage.pay(booking, payment);
+            response.add(updated);
             logStorage.logChange(updated);
         }
 

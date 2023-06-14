@@ -24,9 +24,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    //booking
-    @ManyToOne
-    @JoinColumn(name = "BOOKING_ID")
+    @OneToOne
     @JsonBackReference
     private Booking booking;
 
@@ -39,8 +37,6 @@ public class Payment {
     @Column(name = "PRICE")
     private Integer price;
 
-    //discount
-    //one to one discount
     @OneToOne
     @JoinColumn(name = "DISCOUNT_ID")
     private Discount discount;
