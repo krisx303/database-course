@@ -43,4 +43,10 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     @Column(name = "BOOKING_STATE")
     private BookingState bookingState;
+
+    double getSavingsValue() {
+        if(payment == null) return 0;
+        if(payment.getDiscount() == null) return 0;
+        return payment.getDiscount().calculateSavings(travel.getPrice());
+    }
 }

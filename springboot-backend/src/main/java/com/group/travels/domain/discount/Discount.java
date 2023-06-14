@@ -31,4 +31,8 @@ public class Discount {
     public void setUsed(Boolean used) {
         this.used = used;
     }
+
+    public double calculateSavings(Double price) {
+        return price * (discountPercentage / 100.0);
+    }
 }
