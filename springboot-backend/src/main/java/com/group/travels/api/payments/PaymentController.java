@@ -81,7 +81,7 @@ public class PaymentController {
             Booking updated=bookingStorage.changeBookingState(booking, BookingState.PAID);
             bookings.add(updated);
             paymentStorage.create(booking,
-                    paymentRequest.discountCode()==null?-1:discountStorage.findByCode(paymentRequest.discountCode()).calculateDiscount(booking.getTravel().getPrice()));
+                    paymentRequest.discountCode()==null?-1:discountStorage.findByCode(paymentRequest.discountCode()).calculateDiscount(booking.getTravel().getPrice()),discountStorage.findByCode(paymentRequest.discountCode()));
             logStorage.logChange(updated);
         }
 

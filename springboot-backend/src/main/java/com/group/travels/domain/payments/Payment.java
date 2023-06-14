@@ -3,6 +3,7 @@ package com.group.travels.domain.payments;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.group.travels.domain.booking.Booking;
 import com.group.travels.domain.customer.Customer;
+import com.group.travels.domain.discount.Discount;
 import com.group.travels.domain.travel.Travel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,4 +38,10 @@ public class Payment {
     //price
     @Column(name = "PRICE")
     private Integer price;
+
+    //discount
+    //one to one discount
+    @OneToOne
+    @JoinColumn(name = "DISCOUNT_ID")
+    private Discount discount;
 }
