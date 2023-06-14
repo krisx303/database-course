@@ -5,6 +5,7 @@ import com.group.travels.api.travel.TravelRequest;
 import com.group.travels.domain.booking.Booking;
 import com.group.travels.domain.country.Country;
 import com.group.travels.domain.customer.Customer;
+import com.group.travels.domain.discount.Discount;
 import com.group.travels.domain.travel.Travel;
 
 import java.time.LocalDateTime;
@@ -28,19 +29,21 @@ public class PaymentStorage {
                 .orElseThrow(() -> new PaymentNotFoundException(id));
     }
 
-    public Payment create(Booking booking, double price_discounted) {
+    public Payment create(Booking booking, double price_discounted, Discount discount){
         Payment toSave;
         if(price_discounted==-1){
              toSave = Payment.builder()
                     .booking(booking)
                     .paymentDate(LocalDateTime.now())
                     .price(booking.getTravel().getPrice())
+                     .discount(discount)
                     .build();
         }else{
              toSave = Payment.builder()
                     .booking(booking)
                     .paymentDate(LocalDateTime.now())
                     .price((int) price_discounted)
+                     .discount(discount)
                     .build();
         }
 
