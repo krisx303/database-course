@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,8 @@ public class TravelController {
     @GetMapping("/search")
     ResponseEntity<List<TravelResponse>> searchByName(@RequestParam("query") String query) {
         var filtered = travelStorage.searchByName(query)
-                .stream().map(TravelResponse::new).toList();
+                .stream().filter(travel -> travel.getTravelStartDate().isAfter(LocalDateTime.now()))
+                .map(TravelResponse::new).toList();
         return ResponseEntity.ok(filtered);
     }
 
@@ -61,6 +63,7 @@ public class TravelController {
     @PostMapping("/filter")
     ResponseEntity<List<TravelResponse>> filterTravels(@RequestBody TravelSearchRequest details){
         var filtered = travelStorage.filterTravels(details.countryIDs(), details.travelName(), details.minFreePlaces());
+        filtered = filtered.stream().filter(travel -> travel.getTravelStartDate().isAfter(LocalDateTime.now())).toList();
         var formatted = filtered.stream().map(TravelResponse::new).toList();
         return ResponseEntity.ok(formatted);
     }
