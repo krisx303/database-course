@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,14 +61,17 @@ public class BookingController {
         Customer customer = customerStorage.findByID(details.customerID());
         Travel travel = travelStorage.findByID(details.travelID());
 
-        if (travel.getNumberOfFreePlaces() > 0) {
-            travelStorage.reservePlaceOnTrip(travel);
-            Booking saved = bookingStorage.create(customer, travel);
-            logStorage.logCreate(saved);
-            return new ResponseEntity<>(saved, HttpStatus.CREATED);
-        } else {
+        if(!travel.hasAnyFreePlaces()){
             throw new IllegalOperationException("There is no free places on this trip!");
         }
+        if(travel.getTravelStartDate().isBefore(LocalDateTime.now())){
+            throw new IllegalOperationException("Travel is in the past!");
+        }
+
+        travelStorage.reservePlaceOnTrip(travel);
+        Booking saved = bookingStorage.create(customer, travel);
+        logStorage.logCreate(saved);
+        return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
     @Operation(description = "Updates state of Booking with given ID to CANCELLED")
@@ -77,6 +81,10 @@ public class BookingController {
 
         if(booking.getBookingState() == BookingState.CANCELLED)
             throw new IllegalOperationException("Booking is already cancelled");
+
+        if(booking.getTravel().getTravelStartDate().isBefore(LocalDateTime.now())){
+            throw new IllegalOperationException("Travel is in the past!");
+        }
 
         travelStorage.undoReservationOnTrip(booking.getTravel());
         Booking updated = bookingStorage.changeBookingState(booking, BookingState.CANCELLED);
