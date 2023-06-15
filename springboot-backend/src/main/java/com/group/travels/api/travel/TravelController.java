@@ -61,8 +61,13 @@ public class TravelController {
 
     @Operation(description = "Filter travels by provided object TravelSearchRequest")
     @PostMapping("/filter")
-    ResponseEntity<List<TravelResponse>> filterTravels(@RequestBody TravelSearchRequest details){
-        var filtered = travelStorage.filterTravels(details.countryIDs(), details.travelName(), details.minFreePlaces());
+    ResponseEntity<List<TravelResponse>> filterTravels(@RequestBody TravelSearchRequest details) {
+        List<Travel> filtered;
+        if(details.countryIDs() == null || details.countryIDs().size() == 0){
+            filtered = travelStorage.filterTravelsAllCountries(details.travelName(), details.minFreePlaces());
+        }else{
+            filtered = travelStorage.filterTravels(details.countryIDs(), details.travelName(), details.minFreePlaces());
+        }
         filtered = filtered.stream().filter(travel -> travel.getTravelStartDate().isAfter(LocalDateTime.now())).toList();
         var formatted = filtered.stream().map(TravelResponse::new).toList();
         return ResponseEntity.ok(formatted);

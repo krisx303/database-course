@@ -24,4 +24,13 @@ public interface TravelRepository extends JpaRepository<Travel,Long> {
             @Param("minFreePlaces") int minFreePlaces
     );
 
+    @Query(value = "SELECT t.* FROM travels t " +
+            "JOIN countries c ON t.country = c.id " +
+            "WHERE t.travel_name LIKE %:travelName% " +
+            "AND t.number_of_free_places >= :minFreePlaces",
+            nativeQuery = true)
+    List<Travel> filterTravelsAllCountries(
+            @Param("travelName") String travelName,
+            @Param("minFreePlaces") int minFreePlaces
+    );
 }

@@ -85,4 +85,8 @@ public class TravelStorage {
     public List<Travel> filterTravels(List<Long> countries, String travelName, int minFreePlaces) {
         return travelRepository.filterTravels(countries, travelName, minFreePlaces);
     }
+
+    public List<Travel> filterTravelsAllCountries(String travelName, int minFreePlaces) {
+        return travelRepository.filterTravelsAllCountries(travelName, minFreePlaces);
+    }
 }
