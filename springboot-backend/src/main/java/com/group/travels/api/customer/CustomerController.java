@@ -1,5 +1,6 @@
 package com.group.travels.api.customer;
 
+import com.group.travels.domain.booking.Booking;
 import com.group.travels.domain.customer.Customer;
 import com.group.travels.domain.customer.CustomerStorage;
 import jakarta.validation.Valid;
@@ -51,5 +52,12 @@ public class CustomerController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/getSavings")
+    ResponseEntity<TotalSavings> getSavings(@PathVariable Long id){
+        Customer customer = customerStorage.findByID(id);
+        var savings= customer.getBookings().stream().mapToDouble(Booking::getSavingsValue).sum();
+        return ResponseEntity.ok(new TotalSavings(savings));
     }
 }
